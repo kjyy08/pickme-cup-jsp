@@ -4,7 +4,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Getter;
 import org.juyb99.pickmecupjsp.dto.httpclient.APIClientParam;
 import org.juyb99.pickmecupjsp.dto.httpclient.HttpMethod;
-import org.juyb99.pickmecupjsp.model.Youtube;
+import org.juyb99.pickmecupjsp.domain.Youtube;
 import org.juyb99.pickmecupjsp.util.httpclient.APIClient;
 import org.juyb99.pickmecupjsp.util.json.JsonUtil;
 

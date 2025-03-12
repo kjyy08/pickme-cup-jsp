@@ -3,7 +3,7 @@ package org.juyb99.pickmecupjsp.service;
 import jakarta.servlet.ServletContext;
 import lombok.Getter;
 import org.juyb99.pickmecupjsp.common.config.CustomServletContextListener;
-import org.juyb99.pickmecupjsp.model.Youtube;
+import org.juyb99.pickmecupjsp.domain.Youtube;
 import org.juyb99.pickmecupjsp.repository.YoutubeRepository;
 
 import java.util.List;

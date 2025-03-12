@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.juyb99.pickmecupjsp.common.config.CustomServletContextListener;
 import org.juyb99.pickmecupjsp.common.controller.BaseController;
-import org.juyb99.pickmecupjsp.model.Youtube;
+import org.juyb99.pickmecupjsp.domain.Youtube;
 import org.juyb99.pickmecupjsp.service.YoutubeService;
 import org.juyb99.pickmecupjsp.util.json.JsonUtil;
 

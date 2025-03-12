@@ -8,13 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.juyb99.pickmecupjsp.common.config.CustomServletContextListener;
 import org.juyb99.pickmecupjsp.common.controller.BaseController;
-import org.juyb99.pickmecupjsp.model.Youtube;
 import org.juyb99.pickmecupjsp.service.YoutubeService;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @WebServlet("/worldcup")
 public class WorldCupController extends BaseController {

@@ -1,4 +1,4 @@
-package org.juyb99.pickmecupjsp.model;
+package org.juyb99.pickmecupjsp.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
