@@ -1,0 +1,385 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #f8f9fa;
+    padding-top: 56px; /* 네비게이션 바 고정으로 인한 상단 패딩 */
+    position: relative;
+    -ms-overflow-style: none; /* IE, Edge 스크롤바 스타일 'none'으로 설정 */
+}
+
+body::-webkit-scrollbar {
+    display: none; /*  WebKit 기반 body 요소 스크롤바 숨김 (위의 코드와 중복될 수 있지만 명시적으로) */
+}
+
+/* 페이지 전환 시 페이드아웃 효과 */
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 500;
+}
+
+.hero-section {
+    position: relative;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+}
+
+.carousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.carousel-inner, .carousel-item {
+    height: 100%;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.85;
+    /*transform: scale(1);*/
+    /*transition: transform 10s ease-out;*/
+    /*transform-origin: center center;*/
+}
+
+.carousel-item.active img {
+    transform: scale(1.05);
+}
+
+.content-overlay {
+    position: absolute;
+    top: 0; /* 추가: top: 0; 를 명시적으로 설정 */
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+    color: white;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 수직 중앙 정렬 */
+    align-items: center; /* 수평 중앙 정렬 */
+    height: 100%; /* 추가: height: 100%; 를 명시적으로 설정. 필요에 따라 확인 */
+}
+
+.title-section {
+    margin-bottom: 10rem;
+    /* text-align: center; - content-overlay에서 text-align center를 적용하므로 불필요 */
+}
+
+h1 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    font-size: 3rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.btn-start {
+    background-color: #ff6b6b;
+    color: white;
+    font-size: 1.2rem;
+    padding: 10px 30px;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.btn-start:hover {
+    background-color: #fa5252;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.main-container {
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 50px;
+    padding: 20px;
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+
+.category-section {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.category-card {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-nav .nav-item.active .nav-link {
+    color: #ff6b6b;
+}
+
+.category-section {
+    margin: 30px 0;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.category-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Chrome, Safari, Edge 등 WebKit 기반 브라우저 */
+::-webkit-scrollbar {
+    width: 0px; /* 스크롤바 너비 0으로 설정 */
+    height: 0px; /* 필요에 따라 높이도 0으로 설정 */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: transparent; /* 스크롤바 thumb(움직이는 부분) 투명하게 설정 */
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent; /* 스크롤바 track(배경) 투명하게 설정 */
+}
+
+/* Firefox 브라우저 */
+* {
+    scrollbar-width: none; /* 스크롤바 너비 'none'으로 설정하여 숨김 */
+}
+
+/* 이상형 월드컵 스타일 */
+.game-container {
+    padding: 30px 0;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.game-title {
+    font-weight: 500 !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2) !important;
+    margin-bottom: 10px;
+}
+
+
+.game-subtitle {
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+.round-info {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 50px;
+    display: inline-block;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.vs-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.video-card {
+    width: 100%;
+    max-width: 580px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    cursor: pointer;
+    position: relative;
+}
+
+/* 선택된 아이템 애니메이션 (확대 효과) */
+@keyframes enlarge {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.1); /* 선택된 아이템을 확대 */
+    }
+}
+
+/* 선택되지 않은 아이템 애니메이션 (페이드 아웃 효과) */
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0; /* 선택되지 않은 아이템은 사라지게 */
+    }
+}
+
+/* 페이드인 애니메이션 */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* 선택된 아이템에 적용할 클래스 */
+.selected {
+    animation: enlarge 0.5s ease-in-out forwards;
+}
+
+/* 선택되지 않은 아이템에 적용할 클래스 */
+.unselected {
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+.video-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.video-container {
+    width: 100%;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 비율 */
+    height: 0;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.video-info {
+    padding: 15px;
+    background-color: white;
+}
+
+.video-title {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.video-channel {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.vs-badge {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ff6b6b;
+    color: white;
+    font-weight: 700;
+    font-size: 2rem;
+    padding: 10px 20px;
+    border-radius: 10px;
+    z-index: 10;
+}
+
+.select-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 0 0 15px 15px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.select-button:hover {
+    background-color: #fa5252;
+}
+
+.progress-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.progress {
+    height: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    background-color: #ff6b6b;
+}
+
+.progress-text {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 1444px) {
+    .vs-container {
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .vs-badge {
+        position: relative;
+        margin: 15px 0;
+        transform: none;
+        left: 0;
+        top: 0;
+    }
+}

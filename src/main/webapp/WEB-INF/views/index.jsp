@@ -1,0 +1,238 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PickMe Cup</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<%= request.getContextPath() %>/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+<!-- 네비게이션 바 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="./">PickMe Cup</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#home">홈</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#category">카테고리</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">인기 순위</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">커뮤니티</a>
+                </li>
+            </ul>
+            <div class="d-flex ms-3">
+                <button class="btn btn-outline-danger" type="button">로그인</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div id="home">
+    <!-- 히어로 섹션 (캐러셀 + 오버레이 콘텐츠) -->
+    <section class="hero-section">
+        <!-- 캐러셀 섹션 -->
+        <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="<%= request.getContextPath() %>/static/images/carousel01.jpg" class="d-block"
+                         alt="이상형 월드컵 이미지 1">
+                </div>
+                <div class="carousel-item">
+                    <img src="<%= request.getContextPath() %>/static/images/carousel02.jpg" class="d-block"
+                         alt="이상형 월드컵 이미지 2">
+                </div>
+                <div class="carousel-item">
+                    <img src="<%= request.getContextPath() %>/static/images/carousel03.jpg" class="d-block"
+                         alt="이상형 월드컵 이미지 3">
+                </div>
+            </div>
+        </div>
+
+        <!-- 오버레이 콘텐츠 -->
+        <div class="content-overlay">
+            <div class="title-section">
+                <h1>이상형 월드컵</h1>
+                <p class="subtitle">당신의 최애를 찾아보세요!</p>
+            </div>
+            <!-- 게임 시작 버튼 -->
+            <button class="btn btn-start" id="startGameBtn">게임 시작하기</button>
+        </div>
+    </section>
+</div>
+
+<div id="category" class="main-container container">
+    <!-- 카테고리 섹션 -->
+    <div class="category-section">
+        <h3 class="mb-4">인기 카테고리</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="category-card card">
+                    <img src="<%= request.getContextPath() %>/static/images/carousel03.jpg" class="card-img-top"
+                         alt="아이돌">
+                    <div class="card-body">
+                        <h5 class="card-title">아이돌</h5>
+                    </div>
+                </div>
+            </div>
+            <%-- col-md-4 클래스 복사해서 추가 --%>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 이상형 월드컵. All rights reserved.</p>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // 캐러셀 관련 기능을 별도 함수로 분리
+        function setupCarousel() {
+            const mainCarousel = document.getElementById('mainCarousel');
+            const directions = ['top', 'bottom', 'left', 'right', 'top left', 'top right', 'bottom left', 'bottom right'];
+
+            // 캐러셀 자동 재생 설정
+            const carousel = new bootstrap.Carousel(mainCarousel, {
+                interval: 5000,
+                wrap: true
+            });
+
+            carousel.cycle();
+
+            // 방향에 따른 transformOrigin 값 매핑 객체
+            const transformOriginMap = {
+                'top': 'center top',
+                'bottom': 'center bottom',
+                'left': 'left center',
+                'right': 'right center',
+                'top left': 'top left',
+                'top right': 'top right',
+                'bottom left': 'bottom left',
+                'bottom right': 'bottom right'
+            };
+
+            // 랜덤 방향 애니메이션 적용 함수
+            function applyRandomDirectionAnimation(carouselItem) {
+                const activeImg = carouselItem.querySelector('img');
+                const randomDirectionIndex = Math.floor(Math.random() * directions.length);
+                const selectedDirection = directions[randomDirectionIndex];
+
+                activeImg.style.transformOrigin = transformOriginMap[selectedDirection] || 'center center';
+                activeImg.style.offsetWidth; // 리플로우 트리거
+            }
+
+            // 이미지 애니메이션 설정 함수
+            function setupImageAnimation(carouselItem) {
+                const img = carouselItem.querySelector("img");
+                img.style.transform = "scale(1.05)";
+                img.style.transition = "transform 10s ease-out";
+                applyRandomDirectionAnimation(carouselItem);
+            }
+
+            // 초기 활성 캐러셀 아이템 애니메이션 설정
+            const initialActiveCarouselItem = mainCarousel.querySelector('.carousel-item.active');
+            const firstImg = initialActiveCarouselItem.querySelector('img');
+
+            if (firstImg.complete) {
+                firstImg.style.transform = "scale(1)";
+                firstImg.style.transition = "transform 10s ease-out";
+                applyRandomDirectionAnimation(initialActiveCarouselItem);
+            } else {
+                firstImg.onload = () => {
+                    firstImg.style.transform = "scale(1)";
+                    firstImg.style.transition = "transform 10s ease-out";
+                    applyRandomDirectionAnimation(initialActiveCarouselItem);
+                }
+            }
+
+            // 캐러셀 이벤트 리스너 등록
+            mainCarousel.addEventListener('slide.bs.carousel', function () {
+                const activeCarouselItem = mainCarousel.querySelector('.carousel-item.active');
+                activeCarouselItem.querySelector("img").style.transform = "scale(1)";
+            });
+
+            mainCarousel.addEventListener('slid.bs.carousel', function () {
+                const activeCarouselItem = mainCarousel.querySelector('.carousel-item.active');
+                setupImageAnimation(activeCarouselItem);
+            });
+        }
+
+        // 카테고리 애니메이션 설정 함수
+        function setupCategoryAnimation() {
+            const categorySection = document.querySelector('.category-section');
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        categorySection.classList.add('visible');
+                    } else {
+                        categorySection.classList.remove('visible');
+                    }
+                });
+            }, {threshold: 0.2});
+
+            observer.observe(categorySection);
+        }
+
+        // 게임 시작 버튼 클릭 이벤트
+        document.getElementById('startGameBtn').addEventListener('click', function () {
+            window.location.href = '/worldcup?theme=아이돌';
+        });
+
+        document.querySelectorAll('a.nav-link').forEach(link => {
+            link.addEventListener('click', function (e) {
+                const targetId = this.getAttribute('href');
+                if (targetId.startsWith("#")) {
+                    e.preventDefault();
+                    const targetElement = document.querySelector(targetId);
+                    const navbarHeight = document.querySelector('.navbar').offsetHeight;
+
+                    window.scrollTo({
+                        top: targetElement.offsetTop - navbarHeight,
+                        behavior: 'smooth' // 부드러운 스크롤 효과
+                    });
+                }
+            });
+        });
+
+        // 카테고리 카드 클릭 이벤트
+        const categoryCards = document.querySelectorAll('.category-card');
+        categoryCards.forEach(card => {
+            card.addEventListener('click', function () {
+                const category = encodeURIComponent(this.querySelector('.card-title').textContent);
+                window.location.href = `/worldcup?theme=\${category}`;
+            });
+        });
+
+        // 캐러셀 설정 및 이벤트 처리
+        setupCarousel();
+
+        // 네비게이션 활성화 상태 표시
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === window.location.pathname.split('/').pop()) {
+                link.parentElement.classList.add('active');
+            }
+        });
+
+        // 스크롤 시 '인기 카테고리' 섹션 페이드인 효과 적용
+        setupCategoryAnimation();
+    });
+
+</script>
+</body>
+</html>
