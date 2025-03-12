@@ -19,18 +19,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <%--                <li class="nav-item">--%>
-                <%--                    <a class="nav-link" href="./">홈</a>--%>
-                <%--                </li>--%>
-                <%--                <li class="nav-item">--%>
-                <%--                    <a class="nav-link" href="#">카테고리</a>--%>
-                <%--                </li>--%>
-                <%--                <li class="nav-item">--%>
-                <%--                    <a class="nav-link" href="#">인기 순위</a>--%>
-                <%--                </li>--%>
-                <%--                <li class="nav-item">--%>
-                <%--                    <a class="nav-link" href="#">커뮤니티</a>--%>
-                <%--                </li>--%>
+                <%-- 메뉴 항목 생략 --%>
             </ul>
             <div class="d-flex ms-3">
                 <button class="btn btn-outline-danger" type="button">로그인</button>
@@ -86,12 +75,13 @@
         </div>
     </div>
 
+    <!-- 진행바 영역 -->
     <div class="progress-container">
         <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 12.5%;" aria-valuenow="12.5" aria-valuemin="0"
+            <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
                  aria-valuemax="100"></div>
         </div>
-        <p class="progress-text">1/8 진행 중 (총 16강)</p>
+        <p class="progress-text">0/8 진행 중 (총 16강)</p>
     </div>
 </div>
 
@@ -135,8 +125,9 @@
 
 <!-- Bootstrap & 필요한 JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<!-- YouTube API 스크립트 -->
+<script src="https://www.youtube.com/iframe_api"></script>
 <script>
-    // 게임 진행 로직
     document.addEventListener('DOMContentLoaded', async function () {
         let items = [];
         let players = [];
@@ -147,14 +138,19 @@
         let itemsLoaded = false;
         let playersReady = false;
 
+        // 진행바 업데이트를 위한 변수
+        let roundMatchesCompleted = 0;
+        let roundTotalMatches = 0;
+
         /**
          * 첫 라운드를 설정합니다.
-         * 현재 라운드를 설정하고, 현재 아이템 카운트를 1로 초기화합니다.
-         * @param {array} array - 라운드 배열.
+         * @param {array} array - 아이템 배열 (예: 16개의 영상 아이템)
          */
         function setFirstRound(array) {
-            currentRound = array.length;
+            currentRound = array.length;  // 예: 16강이면 currentRound=16
             currentItemCount = 1;
+            roundMatchesCompleted = 0;
+            roundTotalMatches = currentRound / 2; // 첫 라운드의 총 매치 수 (16강이면 8매치)
         }
 
         /**
@@ -167,8 +163,7 @@
         }
 
         /**
-         * 현재 라운드 정보를 화면에 표시합니다.
-         * 현재 라운드가 1이면 "우승!", 2이면 "결승", 그 외에는 "[라운드]강([현재 아이템 번호]/[전체 아이템 수])" 형식으로 표시합니다.
+         * 현재 라운드 정보를 업데이트합니다.
          */
         function updateRoundInfo() {
             let text =
@@ -181,9 +176,25 @@
         }
 
         /**
-         * 다음 대결 쌍을 화면에 표시합니다.
-         * 대결할 두 아이템을 선택하고, 각 아이템에 해당하는 YouTube 비디오를 로드합니다.
-         * 라운드가 끝났는지 확인하고, 끝났으면 다음 라운드를 설정하거나 최종 우승자를 표시합니다.
+         * 진행바(progress-container)를 업데이트합니다.
+         */
+        function updateProgressContainer() {
+            const progressBar = document.querySelector('.progress-bar');
+            const progressText = document.querySelector('.progress-text');
+            let progressPercent = (roundMatchesCompleted / roundTotalMatches) * 100;
+            progressBar.style.width = progressPercent + '%';
+            progressBar.setAttribute('aria-valuenow', progressPercent.toString());
+            console.log(currentRound);
+
+            if (currentRound > 2) {
+                progressText.textContent = (roundMatchesCompleted + 1) + '/' + roundTotalMatches + ' 진행 중 (' + currentRound + '강)';
+            } else {
+                progressText.textContent = "결승 진행 중";
+            }
+        }
+
+        /**
+         * 다음 대결 쌍을 표시합니다.
          */
         function displayNextPair() {
             if (items.length < 2) {
@@ -192,33 +203,34 @@
                     location.href = `/`;
                     return;
                 } else {
+                    // 라운드 종료 후 다음 라운드 준비
                     items = shuffleArray(items);
                     currentRound >>= 1;
+                    // 다음 라운드의 진행바 초기화
+                    roundMatchesCompleted = 0;
+                    if (currentRound > 1) {
+                        roundTotalMatches = currentRound / 2;
+                        updateProgressContainer();
+                    }
                 }
             }
 
             currentPair = items.splice(0, 2);
             for (let i = 0; i < 2; i++) {
-                console.log(currentPair[i]);
                 const videoId = extractVideoId(currentPair[i].youtube_link);
                 if (players[i]) {
                     players[i].cueVideoById(videoId);
                 } else {
                     console.error(`플레이어 \${i}가 아직 준비되지 않았습니다.`);
                 }
-                // const videoTitle = document.getElementById(`video-title-\${i}`);
-                // console.log(videoTitle);
-                // videoTitle.textContent = currentPair[i].title;
                 document.getElementById(`video-title-\${i}`).textContent = currentPair[i].title;
             }
             updateRoundInfo();
         }
 
         /**
-         * 아이템을 선택했을 때의 동작을 처리합니다.
-         * 선택되지 않은 다른 아이템의 비디오를 정지시키고, 선택된 아이템과 선택되지 않은 아이템에 CSS 클래스를 추가하여 시각적 효과를 줍니다.
-         * 2초 후에 선택된 아이템을 다음 라운드에 진출시키고, 다음 대결 쌍을 표시합니다.
-         * @param {number} index - 선택된 아이템의 인덱스 (0 또는 1).
+         * 아이템 선택 시 동작합니다.
+         * @param {number} index - 선택한 아이템의 인덱스 (0 또는 1).
          */
         function selectItem(index) {
             players.forEach((player, i) => {
@@ -233,11 +245,22 @@
             cards[1 - index].classList.add("unselected");
 
             setTimeout(() => {
+                // 현재 라운드에서 매치 완료 수 증가 및 진행바 업데이트
+                roundMatchesCompleted++;
+                updateProgressContainer();
+
                 items.push(currentPair[index]);
                 if (items.length === currentRound / 2) {
+                    // 해당 라운드의 모든 매치가 끝났을 경우
                     currentRound >>= 1;
                     currentItemCount = 1;
                     items = shuffleArray(items);
+                    // 다음 라운드 진행바 초기화 (우승 전까지)
+                    if (currentRound > 1) {
+                        roundMatchesCompleted = 0;
+                        roundTotalMatches = currentRound / 2;
+                        updateProgressContainer();
+                    }
                 }
 
                 cards[index].classList.remove("selected");
@@ -263,16 +286,15 @@
 
         /**
          * 월드컵 게임을 시작합니다.
-         * 첫 라운드를 설정하고, 다음 대결 쌍을 표시합니다.
          */
         function startWorldCup() {
             setFirstRound(items);
+            updateProgressContainer();
             displayNextPair();
         }
 
         /**
-         * 월드컵 게임 시작을 시도합니다.
-         * 아이템 로드와 플레이어 준비가 모두 완료되면 게임을 시작합니다.
+         * 게임 시작 시도
          */
         function tryStartWorldCup() {
             console.log("월드컵 시작 시도");
@@ -285,8 +307,7 @@
         }
 
         /**
-         * YouTube 링크에서 비디오 ID를 추출합니다.
-         * '/embed/' 경로 또는 'v' 쿼리 파라미터를 사용하여 비디오 ID를 찾습니다.
+         * YouTube 링크에서 비디오 ID 추출
          * @param {string} youtubeLink - YouTube 링크.
          * @returns {string} - 비디오 ID.
          */
@@ -298,11 +319,10 @@
         }
 
         /**
-         * YouTube Iframe API가 준비되면 호출됩니다.
-         * 각 YouTube 플레이어 iframe에 대해 YT.Player 객체를 생성하고, 이벤트 핸들러를 설정합니다.
+         * YouTube Iframe API 준비 시 호출
          */
         function onYouTubeIframeAPIReady() {
-            console.log("유튜브 API 준비 완료")
+            console.log("유튜브 API 준비 완료");
             const iframeElements = document.querySelectorAll(".youtube-player");
             iframeElements.forEach((iframe, index) => {
                 players.push(
@@ -317,9 +337,7 @@
         }
 
         /**
-         * 플레이어가 준비될 때마다 호출됩니다.
-         * 플레이어 준비 카운트를 증가시키고, 모든 플레이어가 준비되면 게임 시작을 시도합니다.
-         * @param {object} event - 플레이어 이벤트 객체.
+         * 플레이어 준비 완료 시 호출
          */
         function onPlayerReady(event) {
             event.target.pauseVideo();
@@ -335,9 +353,7 @@
         }
 
         /**
-         * 플레이어 상태가 변경될 때마다 호출됩니다.
-         * 한 플레이어가 재생 중이면 다른 플레이어는 일시 중지시킵니다.
-         * @param {object} event - 플레이어 이벤트 객체.
+         * 플레이어 상태 변경 시 호출
          */
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
@@ -347,10 +363,6 @@
             }
         }
 
-        /**
-         * 웹 페이지가 로드되면 호출됩니다.
-         * 각 카드에 클릭 이벤트 리스너를 추가하고, YouTube Iframe API를 초기화합니다.
-         */
         window.onload = () => {
             console.log("웹 페이지 로드 완료");
 
@@ -365,6 +377,5 @@
         };
     });
 </script>
-<script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>

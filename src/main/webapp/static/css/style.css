@@ -122,7 +122,6 @@ h1 {
 
 .footer {
     text-align: center;
-    margin-top: 50px;
     padding: 20px;
     color: #adb5bd;
     font-size: 0.9rem;
@@ -212,6 +211,7 @@ h1 {
 }
 
 .round-info {
+    visibility: hidden;
     background-color: #ff6b6b;
     color: white;
     padding: 8px 20px;
