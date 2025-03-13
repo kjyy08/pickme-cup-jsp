@@ -1,5 +1,7 @@
 package org.juyb99.pickmecupjsp.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,16 +28,23 @@ public class YoutubeController extends BaseController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pathInfo = req.getPathInfo();
-        String requestUri = req.getRequestURI();
-
 
         if (pathInfo != null) {
-            routeYoutubeRequest(req, resp);
+            routeGetMethod(req, resp);
             return;
         }
 
         List<Youtube> youtubeList = youtubeService.readYoutubeByAll();
         responseYoutubeListAsJson(resp, youtubeList);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+
+        if (pathInfo != null) {
+            routePutMethod(req, resp);
+        }
     }
 
     private void responseYoutubeListAsJson(HttpServletResponse resp, List<Youtube> youtubeList) throws IOException {
@@ -44,8 +53,8 @@ public class YoutubeController extends BaseController {
         resp.getWriter().write(JsonUtil.toJson(youtubeList));
     }
 
-    private void routeYoutubeRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String pathInfo = req.getPathInfo(); // 예: "/theme/3" 또는 "/title/아이돌"
+    private void routeGetMethod(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo(); // 예: "/theme/아이돌" 또는 "/title/뉴진스 - Hype Boy" 뉴진스의 하입보이요~
         String[] pathParts = pathInfo.split("/");
 
         if (pathParts.length < 3) { // 올바른 요청이 아닐 경우
@@ -71,5 +80,22 @@ public class YoutubeController extends BaseController {
     private void requestThemeAPI(HttpServletResponse resp, String theme) throws IOException {
         List<Youtube> youtubeList = youtubeService.readYoutubeByTheme(theme);
         responseYoutubeListAsJson(resp, youtubeList);
+    }
+
+    private void routePutMethod(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String pathInfo = req.getPathInfo();
+        String path = pathInfo.split("/")[1];
+
+        switch (path) {
+            case "title" -> updateTotalWins(req, resp);
+            default -> resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid endpoint.");
+        }
+    }
+
+    private void updateTotalWins(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(req.getInputStream());
+        long id = jsonNode.get("id").asLong();
+        youtubeService.updateTotalWinsById(id);
     }
 }

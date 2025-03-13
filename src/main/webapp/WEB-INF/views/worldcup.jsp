@@ -28,19 +28,27 @@
     </div>
 </nav>
 
-<div class="container game-container">
+<!-- 로딩 스피너 -->
+<div id="spinner">
+    <div class="spinner-border text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <span>Loading...</span>
+</div>
+
+<!-- 게임 컨테이너: 초기에는 display:none; 상태 -->
+<div class="container game-container" style="display: none;">
     <div class="game-header">
         <h1 class="game-title">아이돌 이상형 월드컵</h1>
         <div class="round-info">16강 1/8</div>
     </div>
-
     <div class="row">
         <div class="col-12">
             <div class="vs-container">
                 <div class="video-card">
                     <div class="video-container">
                         <iframe class="youtube-player"
-                                src="https://www.youtube.com/embed/?enablejsapi=1" title="YouTube video player"
+                                src="https://www.youtube.com/embed/?enablejsapi=1"
                                 frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
@@ -50,14 +58,12 @@
                     </div>
                     <button class="select-button">이 영상 선택하기</button>
                 </div>
-
                 <div class="d-none d-lg-block">
                     <div class="vs-badge">VS</div>
                 </div>
                 <div class="d-block d-lg-none">
                     <div class="vs-badge">VS</div>
                 </div>
-
                 <div class="video-card">
                     <div class="video-container">
                         <iframe class="youtube-player"
@@ -74,7 +80,6 @@
             </div>
         </div>
     </div>
-
     <!-- 진행바 영역 -->
     <div class="progress-container">
         <div class="progress">
@@ -142,71 +147,74 @@
         let roundMatchesCompleted = 0;
         let roundTotalMatches = 0;
 
-        /**
-         * 첫 라운드를 설정합니다.
-         * @param {array} array - 아이템 배열 (예: 16개의 영상 아이템)
-         */
-        function setFirstRound(array) {
-            currentRound = array.length;  // 예: 16강이면 currentRound=16
-            currentItemCount = 1;
-            roundMatchesCompleted = 0;
-            roundTotalMatches = currentRound / 2; // 첫 라운드의 총 매치 수 (16강이면 8매치)
+        function adjustToLowerPowerOfTwo(array) {
+            let length = array.length;
+            let lowerPowerOfTwo = Math.pow(2, Math.floor(Math.log2(length)));
+            return (length === lowerPowerOfTwo) ? array : array.slice(0, lowerPowerOfTwo);
         }
 
-        /**
-         * 배열을 무작위로 섞습니다.
-         * @param {array} array - 섞을 배열.
-         * @returns {array} - 섞인 배열.
-         */
+        function setFirstRound(array) {
+            items = adjustToLowerPowerOfTwo(array);
+            currentRound = items.length;
+            currentItemCount = 1;
+            roundMatchesCompleted = 0;
+            roundTotalMatches = currentRound / 2;
+        }
+
         function shuffleArray(array) {
             return array.sort(() => Math.random() - 0.5);
         }
 
-        /**
-         * 현재 라운드 정보를 업데이트합니다.
-         */
         function updateRoundInfo() {
-            let text =
-                currentRound === 1
-                    ? "우승!"
-                    : currentRound === 2
-                        ? "결승"
-                        : `\${currentRound}강(\${currentItemCount++}/\${currentRound * 0.5})`;
+            let text = currentRound === 1
+                ? "우승!"
+                : currentRound === 2
+                    ? "결승"
+                    : `\${currentRound}강(\${currentItemCount++}/\${currentRound * 0.5})`;
             document.querySelector(".round-info").textContent = text;
         }
 
-        /**
-         * 진행바(progress-container)를 업데이트합니다.
-         */
         function updateProgressContainer() {
             const progressBar = document.querySelector('.progress-bar');
             const progressText = document.querySelector('.progress-text');
             let progressPercent = (roundMatchesCompleted / roundTotalMatches) * 100;
             progressBar.style.width = progressPercent + '%';
             progressBar.setAttribute('aria-valuenow', progressPercent.toString());
-            console.log(currentRound);
+            progressText.textContent = (currentRound > 2)
+                ? (roundMatchesCompleted + 1) + '/' + roundTotalMatches + ' 진행 중 (' + currentRound + '강)'
+                : "결승 진행 중";
+        }
 
-            if (currentRound > 2) {
-                progressText.textContent = (roundMatchesCompleted + 1) + '/' + roundTotalMatches + ' 진행 중 (' + currentRound + '강)';
-            } else {
-                progressText.textContent = "결승 진행 중";
+        async function updateTotalWins(id) {
+            console.log("유튜브 아이템 업데이트 요청 시작");
+            try {
+                await fetch(`/api/youtube/title`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({id: id}),
+                });
+                console.log("유튜브 아이템 업데이트 요청 완료");
+            } catch (error) {
+                console.error("요청 중 오류 발생:", error);
             }
         }
 
-        /**
-         * 다음 대결 쌍을 표시합니다.
-         */
+        function winner(item) {
+            alert(`🏆 우승! \${item.title} 🎉`);
+            updateTotalWins(item.id)
+            location.href = `/winner`;
+        }
+
         function displayNextPair() {
             if (items.length < 2) {
                 if (currentRound === 1) {
-                    alert(`🏆 우승! \${items[0].title} 🎉`);
-                    location.href = `/`;
+                    winner(items[0]);
                     return;
                 } else {
-                    // 라운드 종료 후 다음 라운드 준비
                     items = shuffleArray(items);
                     currentRound >>= 1;
-                    // 다음 라운드의 진행바 초기화
                     roundMatchesCompleted = 0;
                     if (currentRound > 1) {
                         roundTotalMatches = currentRound / 2;
@@ -214,7 +222,6 @@
                     }
                 }
             }
-
             currentPair = items.splice(0, 2);
             for (let i = 0; i < 2; i++) {
                 const videoId = extractVideoId(currentPair[i].youtube_link);
@@ -228,41 +235,29 @@
             updateRoundInfo();
         }
 
-        /**
-         * 아이템 선택 시 동작합니다.
-         * @param {number} index - 선택한 아이템의 인덱스 (0 또는 1).
-         */
         function selectItem(index) {
             players.forEach((player, i) => {
                 if (i !== index) player.stopVideo();
             });
-
             const cardContainer = document.querySelector(".vs-container");
             cardContainer.style.pointerEvents = "none";
-
             const cards = document.querySelectorAll(".video-card");
             cards[index].classList.add("selected");
             cards[1 - index].classList.add("unselected");
-
             setTimeout(() => {
-                // 현재 라운드에서 매치 완료 수 증가 및 진행바 업데이트
                 roundMatchesCompleted++;
                 updateProgressContainer();
-
                 items.push(currentPair[index]);
                 if (items.length === currentRound / 2) {
-                    // 해당 라운드의 모든 매치가 끝났을 경우
                     currentRound >>= 1;
                     currentItemCount = 1;
                     items = shuffleArray(items);
-                    // 다음 라운드 진행바 초기화 (우승 전까지)
                     if (currentRound > 1) {
                         roundMatchesCompleted = 0;
                         roundTotalMatches = currentRound / 2;
                         updateProgressContainer();
                     }
                 }
-
                 cards[index].classList.remove("selected");
                 cards[1 - index].classList.remove("unselected");
                 cardContainer.style.pointerEvents = "auto";
@@ -284,33 +279,27 @@
             }
         }
 
-        /**
-         * 월드컵 게임을 시작합니다.
-         */
         function startWorldCup() {
             setFirstRound(items);
             updateProgressContainer();
             displayNextPair();
         }
 
-        /**
-         * 게임 시작 시도
-         */
         function tryStartWorldCup() {
             console.log("월드컵 시작 시도");
             if (itemsLoaded && playersReady) {
                 console.log("월드컵 시작 성공");
+                document.getElementById("spinner").style.display = "none";
+                const gameContainer = document.querySelector(".game-container");
+                gameContainer.style.display = "block";
+                // 커스텀 페이드 인 업 애니메이션 적용
+                gameContainer.classList.add("fade-in-up");
                 startWorldCup();
             } else {
                 console.log("월드컵 시작 실패");
             }
         }
 
-        /**
-         * YouTube 링크에서 비디오 ID 추출
-         * @param {string} youtubeLink - YouTube 링크.
-         * @returns {string} - 비디오 ID.
-         */
         function extractVideoId(youtubeLink) {
             const url = new URL(youtubeLink);
             return url.pathname.startsWith("/embed/")
@@ -318,9 +307,6 @@
                 : url.searchParams.get("v");
         }
 
-        /**
-         * YouTube Iframe API 준비 시 호출
-         */
         function onYouTubeIframeAPIReady() {
             console.log("유튜브 API 준비 완료");
             const iframeElements = document.querySelectorAll(".youtube-player");
@@ -336,9 +322,6 @@
             });
         }
 
-        /**
-         * 플레이어 준비 완료 시 호출
-         */
         function onPlayerReady(event) {
             event.target.pauseVideo();
             playersReadyCount += 1;
@@ -352,9 +335,6 @@
             }
         }
 
-        /**
-         * 플레이어 상태 변경 시 호출
-         */
         function onPlayerStateChange(event) {
             if (event.data === YT.PlayerState.PLAYING) {
                 players.forEach((player) => {
@@ -365,14 +345,12 @@
 
         window.onload = () => {
             console.log("웹 페이지 로드 완료");
-
             for (let i = 0; i < 2; i++) {
                 const cards = document.querySelectorAll(".video-card");
                 cards[i].addEventListener("click", () => {
                     selectItem(i);
                 });
             }
-
             onYouTubeIframeAPIReady();
         };
     });

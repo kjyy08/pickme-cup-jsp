@@ -33,5 +33,7 @@ public class YoutubeService {
         return youtubeList;
     }
 
-
+    public void updateTotalWinsById(long id) {
+        youtubeRepository.updateTotalWinsById(id);
+    }
 }

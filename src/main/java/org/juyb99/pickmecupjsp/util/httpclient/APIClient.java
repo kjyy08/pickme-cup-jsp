@@ -4,11 +4,9 @@ import org.juyb99.pickmecupjsp.dto.httpclient.APIClientParam;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -33,8 +31,8 @@ public abstract class APIClient {
         HttpResponse<String> response;
         try {
             response = sendRequest(param);
-            logger.info("statusCode: " + response.statusCode());
-            logger.info("body: " + response.body());
+            logger.info("\nstatusCode: " + response.statusCode());
+            logger.info("\nbody: " + response.body());
         } catch (IOException | InterruptedException e) {
             handleApiError(e);
             return Optional.empty();
