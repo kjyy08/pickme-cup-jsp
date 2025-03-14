@@ -1,4 +1,4 @@
-package org.juyb99.pickmecupjsp.controller;
+package org.juyb99.pickmecupjsp.controller.api;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -7,16 +7,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.juyb99.pickmecupjsp.common.config.CustomServletContextListener;
-import org.juyb99.pickmecupjsp.common.controller.BaseController;
+import org.juyb99.pickmecupjsp.common.controller.Controller;
 import org.juyb99.pickmecupjsp.service.GeminiService;
 import org.juyb99.pickmecupjsp.util.json.JsonUtil;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @WebServlet("/api/llm/gemini")
-public class GeminiController extends BaseController {
+public class GeminiController extends Controller {
     private final GeminiService geminiService;
 
     public GeminiController() {
@@ -27,14 +26,12 @@ public class GeminiController extends BaseController {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession httpSession = req.getSession();
-        String winner = req.getParameter("winner");
+        String winner = (String) httpSession.getAttribute("winner");
         List<String> promptList = geminiService.runPromptChaining(
-                "아이돌 %s의 소개, 특징, 성과, 대표곡 등을 포함해서 볼드체와 리스트 기호를 사용하지 않고 5줄의 일반 텍스트를 작성해주세요.".formatted(winner),
-                "다른 대표곡을 5곡정도 { artist: title } 형식으로 가수 이름과 곡의 제목만 출력하고 볼드체와 리스트 기호를 사용하지 않고 일반 텍스트로 작성해주세요.");
-//        req.setAttribute("promptList", promptList);
+                "이상형 월드컵 우승자 %s의 소개, 특징, 성과 등을 포함해서 볼드체와 리스트 기호를 사용하지 않고 5줄의 일반 텍스트를 작성해주세요.".formatted(winner),
+                "%s와 관련없는 내용은 응답하지 마세요.".formatted(winner));
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.getWriter().println(JsonUtil.toJson(promptList));
-
     }
 }

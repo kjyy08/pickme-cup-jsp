@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PickMe Cup - 게임 결과</title>
+    <title>AI 요약보기 | PickMe Cup</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="<%= request.getContextPath() %>/static/css/style.css" rel="stylesheet">
@@ -21,9 +21,9 @@
             <ul class="navbar-nav ms-auto">
                 <%-- 메뉴 항목 생략 --%>
             </ul>
-            <div class="d-flex ms-3">
-                <button class="btn btn-outline-danger" type="button">로그인</button>
-            </div>
+            <%--            <div class="d-flex ms-3">--%>
+            <%--                <button class="btn btn-outline-danger" type="button">로그인</button>--%>
+            <%--            </div>--%>
         </div>
     </div>
 </nav>

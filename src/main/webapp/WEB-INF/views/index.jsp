@@ -26,16 +26,19 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#category">카테고리</a>
                 </li>
+                <%--                <li class="nav-item">--%>
+                <%--                    <a class="nav-link" href="#">인기 순위</a>--%>
+                <%--                </li>--%>
+                <%--                <li class="nav-item">--%>
+                <%--                    <a class="nav-link" href="#">커뮤니티</a>--%>
+                <%--                </li>--%>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">인기 순위</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">커뮤니티</a>
+                    <a class="nav-link" href="/create-category">게임 만들기</a>
                 </li>
             </ul>
-            <div class="d-flex ms-3">
-                <button class="btn btn-outline-danger" type="button">로그인</button>
-            </div>
+            <%--            <div class="d-flex ms-3">--%>
+            <%--                <button class="btn btn-outline-danger" type="button">로그인</button>--%>
+            <%--            </div>--%>
         </div>
     </div>
 </nav>
@@ -47,15 +50,18 @@
         <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="<%= request.getContextPath() %>/static/images/carousel01.jpg" class="d-block"
+                    <img src="https://github.com/kjyy08/pickme-cup-jsp/blob/main/src/main/webapp/static/images/carousel01.jpg?raw=true"
+                         class="d-block"
                          alt="이상형 월드컵 이미지 1">
                 </div>
                 <div class="carousel-item">
-                    <img src="<%= request.getContextPath() %>/static/images/carousel02.jpg" class="d-block"
+                    <img src="https://github.com/kjyy08/pickme-cup-jsp/blob/main/src/main/webapp/static/images/carousel02.jpg?raw=true"
+                         class="d-block"
                          alt="이상형 월드컵 이미지 2">
                 </div>
                 <div class="carousel-item">
-                    <img src="<%= request.getContextPath() %>/static/images/carousel03.jpg" class="d-block"
+                    <img src="https://github.com/kjyy08/pickme-cup-jsp/blob/main/src/main/webapp/static/images/carousel03.jpg?raw=true"
+                         class="d-block"
                          alt="이상형 월드컵 이미지 3">
                 </div>
             </div>
@@ -68,26 +74,18 @@
                 <p class="subtitle">당신의 최애를 찾아보세요!</p>
             </div>
             <!-- 게임 시작 버튼 -->
-            <button class="btn btn-start" id="startGameBtn">게임 시작하기</button>
+            <button class="btn btn-style" id="startGameBtn">게임 시작하기</button>
         </div>
     </section>
 </div>
 
-<div id="category" class="main-container container">
+<div id="category" class=" container">
     <!-- 카테고리 섹션 -->
     <div class="category-section">
-        <h3 class="mb-4">인기 카테고리</h3>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="category-card card">
-                    <img src="<%= request.getContextPath() %>/static/images/carousel03.jpg" class="card-img-top"
-                         alt="아이돌">
-                    <div class="card-body">
-                        <h5 class="card-title">아이돌</h5>
-                    </div>
-                </div>
-            </div>
-            <%-- col-md-4 클래스 복사해서 추가 --%>
+        <h3 class="mb-4">모든 카테고리</h3>
+        <div class="row category-container">
+            <%-- 여기에 카테고리 카드들이 추가됨 --%>
+
         </div>
     </div>
 
@@ -100,6 +98,52 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        function createCategoryCard(categoryTitle, itemType, imgUrl) {
+            // 새로운 카테고리 카드 HTML 요소 생성
+            const categoryCard = document.createElement('div');
+            categoryCard.classList.add('col-md-4');
+
+            // 카드 요소 생성
+            const card = document.createElement('div');
+            card.classList.add('category-card', 'card');
+
+            // 이미지 요소 생성 및 속성 설정
+            const img = document.createElement('img');
+            img.classList.add('card-img-top');
+            img.setAttribute('src', imgUrl); // src 속성 안전하게 설정
+            img.setAttribute('alt', '이미지'); // alt 속성 설정
+
+            // 카드 본문 내용 생성
+            const cardBody = document.createElement('div');
+            cardBody.classList.add('card-body');
+
+            // 제목 텍스트 생성
+            const cardTitle = document.createElement('h5');
+            cardTitle.classList.add('card-title');
+            cardTitle.textContent = categoryTitle; // textContent를 사용하여 텍스트 삽입
+
+            // 카드 본문에 제목 추가
+            cardBody.appendChild(cardTitle);
+
+            // 카드에 hidden으로 아이템 타입 추가
+            const inputItemType = document.createElement(`input`);
+            inputItemType.type = `hidden`;
+            inputItemType.name = `itemType`;
+            inputItemType.value = itemType;
+
+            // 카드에 이미지와 본문 추가
+            card.appendChild(img);
+            card.appendChild(cardBody);
+            card.appendChild(inputItemType);
+
+            // 최상위 요소에 카드 이미지와 본문 추가
+            categoryCard.appendChild(card);
+
+            // 카테고리 카드 부모 요소에 추가
+            const categoryContainer = document.querySelector('.category-container');
+            categoryContainer.appendChild(categoryCard);
+        }
+
         // 캐러셀 관련 기능을 별도 함수로 분리
         function setupCarousel() {
             const mainCarousel = document.getElementById('mainCarousel');
@@ -190,7 +234,7 @@
 
         // 게임 시작 버튼 클릭 이벤트
         document.getElementById('startGameBtn').addEventListener('click', function () {
-            window.location.href = '/worldcup?theme=아이돌';
+            window.location.href = '#category';
         });
 
         document.querySelectorAll('a.nav-link').forEach(link => {
@@ -209,12 +253,18 @@
             });
         });
 
+        const categoryItems = <%= request.getAttribute("categories") %>;
+        categoryItems.forEach((item) => {
+            createCategoryCard(item.theme, item.item_type, item.theme_img_url);
+        })
+
         // 카테고리 카드 클릭 이벤트
         const categoryCards = document.querySelectorAll('.category-card');
         categoryCards.forEach(card => {
             card.addEventListener('click', function () {
                 const category = encodeURIComponent(this.querySelector('.card-title').textContent);
-                window.location.href = `/worldcup?theme=\${category}`;
+                const itemType = this.querySelector('input[name="itemType"]').value;
+                window.location.href = `/worldcup?theme=\${category}&type=\${itemType}`;
             });
         });
 
@@ -231,7 +281,7 @@
 
         // 스크롤 시 '인기 카테고리' 섹션 페이드인 효과 적용
         setupCategoryAnimation();
-    });
+    }, {once: true});
 
 </script>
 </body>

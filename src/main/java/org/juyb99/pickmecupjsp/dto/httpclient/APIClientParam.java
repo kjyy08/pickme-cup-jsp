@@ -11,6 +11,6 @@ import lombok.Builder;
  * @param headers 요청에 필요한 Header
  */
 @Builder
-public record APIClientParam(String url, HttpMethod method, String body, String... headers) {
+public record APIClientParam(String url, HttpMethod method, Object body, String... headers) {
 
 }

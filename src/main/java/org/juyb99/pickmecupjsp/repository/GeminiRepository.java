@@ -2,17 +2,17 @@ package org.juyb99.pickmecupjsp.repository;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.Getter;
+import org.juyb99.pickmecupjsp.common.repository.Repository;
 import org.juyb99.pickmecupjsp.dto.gemini.GeminiModel;
 import org.juyb99.pickmecupjsp.dto.gemini.GeminiRequest;
 import org.juyb99.pickmecupjsp.dto.gemini.GeminiResponse;
 import org.juyb99.pickmecupjsp.dto.httpclient.APIClientParam;
 import org.juyb99.pickmecupjsp.dto.httpclient.HttpMethod;
-import org.juyb99.pickmecupjsp.util.httpclient.APIClient;
 import org.juyb99.pickmecupjsp.util.json.JsonUtil;
 
 import java.util.List;
 
-public class GeminiRepository extends APIClient {
+public class GeminiRepository extends Repository {
     private final String GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
     private final String GEMINI_API_KEY = Dotenv.configure().ignoreIfMissing().load().get("GEMINI_API_KEY");
 

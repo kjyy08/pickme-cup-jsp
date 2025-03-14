@@ -1,5 +1,6 @@
-package org.juyb99.pickmecupjsp.util.httpclient;
+package org.juyb99.pickmecupjsp.common.repository;
 
+import org.juyb99.pickmecupjsp.common.Exception.APIException;
 import org.juyb99.pickmecupjsp.dto.httpclient.APIClientParam;
 
 import java.io.IOException;
@@ -10,11 +11,11 @@ import java.net.http.HttpResponse;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-public abstract class APIClient {
+public abstract class Repository {
     protected final Logger logger;
     protected final HttpClient httpClient;
 
-    protected APIClient() {
+    protected Repository() {
         this.logger = Logger.getLogger(this.getClass().getName());
         this.httpClient = HttpClient.newBuilder().build();
         logger.info("Initializing API client");
@@ -37,6 +38,12 @@ public abstract class APIClient {
             handleApiError(e);
             return Optional.empty();
         }
+
+        int statusCode = response.statusCode();
+        if (statusCode >= 400) {
+            throw new APIException(statusCode, response.body());
+        }
+
         return Optional.of(response.body());
     }
 
@@ -48,9 +55,19 @@ public abstract class APIClient {
      * @throws IOException, InterruptedException 전송 중 발생하는 예외
      */
     protected HttpResponse<String> sendRequest(APIClientParam param) throws IOException, InterruptedException {
+        HttpRequest.BodyPublisher bodyPublisher;
+
+        if (param.body() instanceof byte[]) {
+            bodyPublisher = HttpRequest.BodyPublishers.ofByteArray((byte[]) param.body());
+        } else if (param.body() instanceof String) {
+            bodyPublisher = HttpRequest.BodyPublishers.ofString((String) param.body());
+        } else {
+            throw new IllegalArgumentException("Unsupported request body type");
+        }
+
         return httpClient.send(HttpRequest.newBuilder()
                 .uri(URI.create(param.url()))
-                .method(param.method().getName(), HttpRequest.BodyPublishers.ofString(param.body()))
+                .method(param.method().getName(), bodyPublisher)
                 .headers(param.headers())
                 .build(), HttpResponse.BodyHandlers.ofString());
     }

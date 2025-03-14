@@ -5,10 +5,14 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 import lombok.Getter;
+import org.juyb99.pickmecupjsp.repository.CategoryRepository;
+import org.juyb99.pickmecupjsp.repository.GameItemRepository;
 import org.juyb99.pickmecupjsp.repository.GeminiRepository;
-import org.juyb99.pickmecupjsp.repository.YoutubeRepository;
+import org.juyb99.pickmecupjsp.repository.StorageRepository;
+import org.juyb99.pickmecupjsp.service.CategoryService;
+import org.juyb99.pickmecupjsp.service.GameItemService;
 import org.juyb99.pickmecupjsp.service.GeminiService;
-import org.juyb99.pickmecupjsp.service.YoutubeService;
+import org.juyb99.pickmecupjsp.service.StorageService;
 
 @WebListener
 public class CustomServletContextListener implements ServletContextListener {
@@ -25,8 +29,12 @@ public class CustomServletContextListener implements ServletContextListener {
     private void registerServicesInContext(ServletContextEvent sce) {
         sce.getServletContext().setAttribute("GeminiRepository", GeminiRepository.getInstance());
         sce.getServletContext().setAttribute("GeminiService", GeminiService.getInstance());
-        sce.getServletContext().setAttribute("YoutubeRepository", YoutubeRepository.getInstance());
-        sce.getServletContext().setAttribute("YoutubeService", YoutubeService.getInstance());
+        sce.getServletContext().setAttribute("GameItemRepository", GameItemRepository.getInstance());
+        sce.getServletContext().setAttribute("GameItemService", GameItemService.getInstance());
+        sce.getServletContext().setAttribute("CategoryRepository", CategoryRepository.getInstance());
+        sce.getServletContext().setAttribute("CategoryService", CategoryService.getInstance());
+        sce.getServletContext().setAttribute("StorageRepository", StorageRepository.getInstance());
+        sce.getServletContext().setAttribute("StorageService", StorageService.getInstance());
 
     }
 

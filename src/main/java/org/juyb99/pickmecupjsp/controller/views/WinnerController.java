@@ -1,17 +1,17 @@
-package org.juyb99.pickmecupjsp.controller;
+package org.juyb99.pickmecupjsp.controller.views;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.juyb99.pickmecupjsp.common.controller.BaseController;
+import org.juyb99.pickmecupjsp.common.controller.Controller;
 
 import java.io.IOException;
 
-@WebServlet("/")
-public class HomeController extends BaseController {
+@WebServlet("/winner")
+public class WinnerController extends Controller {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        view(req, resp, "index");
+        view(req, resp, "winner");
     }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PickMe Cup - 이상형 월드컵</title>
+    <title>이상형 선택 | PickMe Cup</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="<%= request.getContextPath() %>/static/css/style.css" rel="stylesheet">
@@ -21,9 +21,9 @@
             <ul class="navbar-nav ms-auto">
                 <%-- 메뉴 항목 생략 --%>
             </ul>
-            <div class="d-flex ms-3">
-                <button class="btn btn-outline-danger" type="button">로그인</button>
-            </div>
+            <%--            <div class="d-flex ms-3">--%>
+            <%--                <button class="btn btn-outline-danger" type="button">로그인</button>--%>
+            <%--            </div>--%>
         </div>
     </div>
 </nav>
@@ -36,11 +36,10 @@
     <span>Loading...</span>
 </div>
 
-<!-- 게임 컨테이너: 초기에는 display:none; 상태 -->
+<!-- 게임 컨테이너 -->
 <div class="container game-container" style="display: none;">
     <div class="game-header">
-        <h1 class="game-title">아이돌 이상형 월드컵</h1>
-        <div class="round-info">16강 1/8</div>
+        <h1 class="game-title"></h1>
     </div>
     <div class="row">
         <div class="col-12">
@@ -53,10 +52,7 @@
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
                     </div>
-                    <div class="video-info">
-                        <h3 id="video-title-0" class="video-title"></h3>
-                    </div>
-                    <button class="select-button">이 영상 선택하기</button>
+                    <button class="select-button">선택하기</button>
                 </div>
                 <div class="d-none d-lg-block">
                     <div class="vs-badge">VS</div>
@@ -72,10 +68,7 @@
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
                     </div>
-                    <div class="video-info">
-                        <h3 id="video-title-1" class="video-title"></h3>
-                    </div>
-                    <button class="select-button">이 영상 선택하기</button>
+                    <button class="select-button">선택하기</button>
                 </div>
             </div>
         </div>
@@ -91,35 +84,39 @@
 </div>
 
 <!-- 결과 모달 (게임 완료 후 표시) -->
-<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true">
+<div class="modal fade" id="resultModal" tabindex="-1" aria-labelledby="resultModalLabel" aria-hidden="true"
+     data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="resultModalLabel">우승자 발표!</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="resultModalLabel">🏆 우승자 발표!</h5>
+                <button type="button" class="btn-close modal-close" data-bs-dismiss="modal" aria-label="Close"
+                        onclick="location.href = `/`"></button>
             </div>
             <div class="modal-body text-center">
                 <h3 class="mb-3">당신의 이상형은</h3>
                 <div class="winner-container mb-3">
                     <div class="video-container mb-3" style="padding-bottom: 56.25%;">
-                        <iframe src="https://www.youtube.com/embed/2S24-y0Ij3Y" title="YouTube video player"
+                        <iframe class="winner-youtube-player"
+                                src="https://www.youtube.com/embed/?enablejsapi=1" title="Loading..."
                                 frameborder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowfullscreen></iframe>
                     </div>
-                    <h4>IVE(아이브) - 'I AM'</h4>
+                    <h4 style="white-space: normal;"></h4>
                 </div>
-                <p>결과를 공유하고 친구들과 비교해보세요!</p>
-                <div class="share-buttons mt-3">
-                    <button class="btn btn-primary me-2"><i class="bi bi-facebook"></i> 페이스북</button>
-                    <button class="btn btn-info me-2"><i class="bi bi-twitter"></i> 트위터</button>
-                    <button class="btn btn-success"><i class="bi bi-link-45deg"></i> 링크 복사</button>
-                </div>
+                <%--                <p>결과를 공유하고 친구들과 비교해보세요!</p>--%>
+                <%--                <div class="share-buttons mt-3">--%>
+                <%--                    <button class="btn btn-primary me-2"><i class="bi bi-facebook"></i> 페이스북</button>--%>
+                <%--                    <button class="btn btn-info me-2"><i class="bi bi-twitter"></i> 트위터</button>--%>
+                <%--                    <button class="btn btn-success"><i class="bi bi-link-45deg"></i> 링크 복사</button>--%>
+                <%--                </div>--%>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                <button type="button" class="btn btn-danger">다시 플레이</button>
+            <div class="modal-footer d-flex justify-content-center">
+                <button class="btn btn-style me-2" id="resultBtn" style="background-color: #535353">메인으로 돌아가기</button>
+                <button class="btn btn-style" id="restartBtn">다시 플레이</button>
             </div>
+
         </div>
     </div>
 </div>
@@ -134,6 +131,7 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
     document.addEventListener('DOMContentLoaded', async function () {
+        const urlParams = new URLSearchParams(window.location.search);
         let items = [];
         let players = [];
         let playersReadyCount = 0;
@@ -181,19 +179,19 @@
             progressBar.style.width = progressPercent + '%';
             progressBar.setAttribute('aria-valuenow', progressPercent.toString());
             progressText.textContent = (currentRound > 2)
-                ? (roundMatchesCompleted + 1) + '/' + roundTotalMatches + ' 진행 중 (' + currentRound + '강)'
+                ? (roundMatchesCompleted) + '/' + roundTotalMatches + ' 진행 중 (' + currentRound + '강)'
                 : "결승 진행 중";
         }
 
         async function updateTotalWins(id) {
             console.log("유튜브 아이템 업데이트 요청 시작");
             try {
-                await fetch(`/api/youtube/title`, {
+                await fetch(`/api/items/title`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({id: id}),
+                    body: JSON.stringify({item_id: id}),
                 });
                 console.log("유튜브 아이템 업데이트 요청 완료");
             } catch (error) {
@@ -202,9 +200,20 @@
         }
 
         function winner(item) {
-            alert(`🏆 우승! \${item.title} 🎉`);
-            updateTotalWins(item.id)
-            location.href = `/winner`;
+            // 모든 플레이어 중지
+            players.forEach((player, i) => {
+                player.stopVideo();
+            });
+
+            // 모달에 우승한 유튜브 링크 삽입
+            document.querySelector("#resultModal .winner-container h4").textContent = item.title;
+            document.querySelector("#resultModal iframe").src = `https://www.youtube.com/embed/\${extractVideoId(item.resource_url)}`;
+
+            setTimeout(() => {
+                let resultModal = new bootstrap.Modal(document.getElementById("resultModal"));
+                resultModal.show();
+                updateTotalWins(item.id);
+            }, 300);
         }
 
         function displayNextPair() {
@@ -224,15 +233,13 @@
             }
             currentPair = items.splice(0, 2);
             for (let i = 0; i < 2; i++) {
-                const videoId = extractVideoId(currentPair[i].youtube_link);
+                const videoId = extractVideoId(currentPair[i].resource_url);
                 if (players[i]) {
                     players[i].cueVideoById(videoId);
                 } else {
                     console.error(`플레이어 \${i}가 아직 준비되지 않았습니다.`);
                 }
-                document.getElementById(`video-title-\${i}`).textContent = currentPair[i].title;
             }
-            updateRoundInfo();
         }
 
         function selectItem(index) {
@@ -244,9 +251,14 @@
             const cards = document.querySelectorAll(".video-card");
             cards[index].classList.add("selected");
             cards[1 - index].classList.add("unselected");
-            setTimeout(() => {
+
+            if (roundMatchesCompleted < roundTotalMatches) {
                 roundMatchesCompleted++;
-                updateProgressContainer();
+            }
+
+            updateProgressContainer();
+
+            setTimeout(() => {
                 items.push(currentPair[index]);
                 if (items.length === currentRound / 2) {
                     currentRound >>= 1;
@@ -268,7 +280,7 @@
         async function readItems(theme) {
             console.log("유튜브 아이템 요청 시작");
             try {
-                const response = await fetch(`/api/youtube/theme/\${theme}`);
+                const response = await fetch(`/api/items/theme/\${theme}`);
                 const data = await response.json();
                 items = shuffleArray(data);
                 itemsLoaded = true;
@@ -329,7 +341,6 @@
             if (playersReadyCount === 2) {
                 console.log("모든 플레이어 준비 완료");
                 playersReady = true;
-                const urlParams = new URLSearchParams(window.location.search);
                 const theme = urlParams.get("theme");
                 readItems(theme);
             }
@@ -342,6 +353,22 @@
                 });
             }
         }
+
+        document.querySelector(".game-title").textContent = urlParams.get("theme");
+
+        document.querySelector(".modal-close").addEventListener("click", function (event) {
+            document.querySelector("#resultModal iframe").src = "";
+        })
+
+        // 닫기 버튼 클릭 시 / 링크로 이동
+        document.getElementById("resultBtn").addEventListener("click", function () {
+            window.location.href = "/";
+        });
+
+        // 다시 플레이 버튼 클릭 시 현재 페이지 새로고침
+        document.getElementById("restartBtn").addEventListener("click", function () {
+            window.location.reload();
+        });
 
         window.onload = () => {
             console.log("웹 페이지 로드 완료");
