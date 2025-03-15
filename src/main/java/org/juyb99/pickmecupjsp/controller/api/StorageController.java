@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @MultipartConfig(
-        maxFileSize = 1024 * 1024 * 10,      // 최대 파일 크기 10MB
+        maxFileSize = 1024 * 1024 * 15,      // 최대 파일 크기 15MB
         maxRequestSize = 1024 * 1024 * 50    // 전체 요청 최대 크기 50MB
 )
 @WebServlet("/s3/images")

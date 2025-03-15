@@ -1,10 +1,11 @@
 package org.juyb99.pickmecupjsp.repository;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
+import org.juyb99.pickmecupjsp.common.Exception.APIException;
 import org.juyb99.pickmecupjsp.common.repository.Repository;
 import org.juyb99.pickmecupjsp.domain.Category;
-import org.juyb99.pickmecupjsp.domain.ItemType;
 import org.juyb99.pickmecupjsp.dto.httpclient.APIClientParam;
 import org.juyb99.pickmecupjsp.dto.httpclient.HttpMethod;
 import org.juyb99.pickmecupjsp.dto.request.CategoryRequestDTO;
@@ -31,10 +32,10 @@ public class CategoryRepository extends Repository {
 
     public static void main(String[] args) {
         CategoryRepository categoryRepository = CategoryRepository.getInstance();
-//        Category category = categoryRepository.findByTheme("아이돌 이상형 월드컵");
-//        logger.info(category.toString());
+        Category category = categoryRepository.findByTheme("카리나 입덕 직캠 이상형 월드컵");
+        logger.info(category.toString());
 //        categoryRepository.updatePlayCountById(category.id());
-        categoryRepository.save(new CategoryRequestDTO("카리나 직캠 월드컵", ItemType.IMAGE, "https://hijjpkutwtscrleugyay.supabase.co/storage/v1/object/public/images/563c7082-ef04-4a49-ac1f-0711b24a7e2e.jpg"));
+//        categoryRepository.save(new CategoryRequestDTO("카리나 직캠 월드컵", ItemType.IMAGE, "https://hijjpkutwtscrleugyay.supabase.co/storage/v1/object/public/images/563c7082-ef04-4a49-ac1f-0711b24a7e2e.jpg"));
 //        categoryRepository.save(new CategoryRequestDTO("음식", ItemType.IMAGE, "https://hijjpkutwtscrleugyay.supabase.co/storage/v1/object/public/images/theme/62b4104c-d2db-4467-a40f-f5ade2bdaf86.jpg"));
     }
 
@@ -58,6 +59,10 @@ public class CategoryRepository extends Repository {
                 .body("")
                 .headers(new String[]{"apikey", SUPABASE_API_KEY, "Authorization", "Bearer %s".formatted(SUPABASE_API_KEY)})
                 .build()).orElseThrow(() -> new RuntimeException("Supabase API request failed"));
+
+        if (response.equals("[]")) {
+            throw new APIException(HttpServletResponse.SC_NOT_FOUND, "Category not found");
+        }
 
         return JsonUtil.fromJsonList(response, Category.class).get(0);
     }

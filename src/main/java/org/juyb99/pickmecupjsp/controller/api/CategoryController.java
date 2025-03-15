@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.juyb99.pickmecupjsp.common.Exception.APIException;
 import org.juyb99.pickmecupjsp.common.config.CustomServletContextListener;
 import org.juyb99.pickmecupjsp.common.controller.Controller;
+import org.juyb99.pickmecupjsp.domain.Category;
 import org.juyb99.pickmecupjsp.dto.request.CategoryRequestDTO;
 import org.juyb99.pickmecupjsp.service.CategoryService;
 import org.juyb99.pickmecupjsp.util.json.JsonUtil;
@@ -24,6 +25,32 @@ public class CategoryController extends Controller {
     public CategoryController() {
         ServletContext servletContext = CustomServletContextListener.getServletContext();
         categoryService = (CategoryService) servletContext.getAttribute("CategoryService");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String param = req.getParameter("theme");
+
+        Category category = null;
+        try {
+            category = categoryService.readCategoryByTheme(param);
+        } catch (APIException e) {
+            resp.setStatus(e.getStatusCode());
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.getWriter().write(e.getMessage());
+            return;
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.setContentType("application/json");
+            resp.getWriter().write("{\"error\": \"서버 내부 오류가 발생했습니다.\"}");
+            return;
+        }
+
+        resp.setStatus(HttpServletResponse.SC_OK);
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.getWriter().write(JsonUtil.toJson(category));
     }
 
     @Override

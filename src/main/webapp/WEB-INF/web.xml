@@ -8,4 +8,13 @@
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
     </servlet-mapping>
+    <filter>
+        <filter-name>CrossOriginIsolationFilter</filter-name>
+        <filter-class>org.juyb99.pickmecupjsp.common.filter.CrossOriginIsolationFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CrossOriginIsolationFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 </web-app>

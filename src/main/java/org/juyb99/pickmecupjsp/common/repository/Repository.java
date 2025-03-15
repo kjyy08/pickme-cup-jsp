@@ -29,10 +29,12 @@ public abstract class Repository {
      */
     protected Optional<String> requestAPI(APIClientParam param) {
         logger.info("Calling API client");
+        logger.info("Request url: " + param.url());
         HttpResponse<String> response;
         try {
             response = sendRequest(param);
             logger.info("\nstatusCode: " + response.statusCode());
+            logger.info("\nuri: " + response.uri());
             logger.info("\nbody: " + response.body());
         } catch (IOException | InterruptedException e) {
             handleApiError(e);

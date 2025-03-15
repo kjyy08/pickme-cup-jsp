@@ -50,19 +50,34 @@
         <div id="mainCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="https://github.com/kjyy08/pickme-cup-jsp/blob/main/src/main/webapp/static/images/carousel01.jpg?raw=true"
+                    <img src="<%= request.getContextPath() %>/static/images/carousel01.webp"
                          class="d-block"
                          alt="이상형 월드컵 이미지 1">
                 </div>
                 <div class="carousel-item">
-                    <img src="https://github.com/kjyy08/pickme-cup-jsp/blob/main/src/main/webapp/static/images/carousel02.jpg?raw=true"
+                    <img src="<%= request.getContextPath() %>/static/images/carousel02.webp"
                          class="d-block"
                          alt="이상형 월드컵 이미지 2">
                 </div>
                 <div class="carousel-item">
-                    <img src="https://github.com/kjyy08/pickme-cup-jsp/blob/main/src/main/webapp/static/images/carousel03.jpg?raw=true"
+                    <img src="<%= request.getContextPath() %>/static/images/carousel03.webp"
                          class="d-block"
                          alt="이상형 월드컵 이미지 3">
+                </div>
+                <div class="carousel-item">
+                    <img src="<%= request.getContextPath() %>/static/images/carousel04.webp"
+                         class="d-block"
+                         alt="이상형 월드컵 이미지 4">
+                </div>
+                <div class="carousel-item">
+                    <img src="<%= request.getContextPath() %>/static/images/carousel05.webp"
+                         class="d-block"
+                         alt="이상형 월드컵 이미지 5">
+                </div>
+                <div class="carousel-item">
+                    <img src="<%= request.getContextPath() %>/static/images/carousel06.webp"
+                         class="d-block"
+                         alt="이상형 월드컵 이미지 6">
                 </div>
             </div>
         </div>
