@@ -11,6 +11,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.10.0/dist/ffmpeg.min.js"></script>
+
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="<%= request.getContextPath() %>/static/favicon/favicon-96x96.png"
+          sizes="96x96"/>
+    <link rel="icon" type="image/svg+xml" href="<%= request.getContextPath() %>/static/favicon/favicon.svg"/>
+    <link rel="shortcut icon" href="<%= request.getContextPath() %>/static/favicon/favicon.ico"/>
+    <link rel="apple-touch-icon" sizes="180x180"
+          href="<%= request.getContextPath() %>/static/favicon/apple-touch-icon.png"/>
+    <link rel="manifest" href="<%= request.getContextPath() %>/static/favicon/site.webmanifest"/>
+
+    <!-- OG -->
+    <meta name="description" content="PickMe Cup - 당신의 최애를 찾아보세요!">
+    <meta property="og:title" content="PickMe Cup - 이상형 월드컵">
+    <meta property="og:description" content="당신의 최애를 찾아보세요!">
+    <meta property="og:image" content="<%= request.getContextPath() %>/static/logo/og.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="PickMe Cup">
+    
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
